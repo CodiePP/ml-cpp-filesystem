@@ -1,0 +1,9 @@
+(library
+ (name mlcpp_filesystem)
+ (public_name mlcpp_filesystem)
+ (preprocess
+  (pps ppx_optcomp))
+ (foreign_stubs (language cxx) (names filesystem) (flags -std=c++17))
+ (c_library_flags :standard -lstdc++)
+ (libraries unix)
+)
