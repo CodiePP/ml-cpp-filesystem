@@ -19,38 +19,31 @@ extern "C" {
 value mlcpp_get_cwd(value unit)
 {
     CAMLparam1(unit);
-    try {
-        const auto res = std::filesystem::current_path();
-        CAMLreturn(caml_copy_string(res.c_str()));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    const auto res = std::filesystem::current_path();
+    CAMLreturn(caml_copy_string(res.c_str()));
 }
 
 } // extern C
 
 /*
- *   set_cwd : string -> unit
+ *   set_cwd : string -> bool
  */
 extern "C" {
 value mlcpp_set_cwd(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        std::filesystem::current_path(fp);
-        CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    std::filesystem::current_path(fp, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
 
 /*
- *   copy : path -> path -> unit
+ *   copy : path -> path -> bool
  */
 extern "C" {
 value mlcpp_copy(value vfpsrc, value vfptgt)
@@ -58,13 +51,11 @@ value mlcpp_copy(value vfpsrc, value vfptgt)
     CAMLparam2(vfpsrc, vfptgt);
     const char *fpsrc = String_val(vfpsrc);
     const char *fptgt = String_val(vfptgt);
-    try {
-        std::filesystem::copy(fpsrc, fptgt);
-        CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    std::filesystem::copy(fpsrc, fptgt, ec);
+    if (! ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -78,20 +69,16 @@ value mlcpp_copy_file(value vfpsrc, value vfptgt)
     CAMLparam2(vfpsrc, vfptgt);
     const char *fpsrc = String_val(vfpsrc);
     const char *fptgt = String_val(vfptgt);
-    try {
-        bool res = false;
-        res = std::filesystem::copy_file(fpsrc, fptgt);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::copy_file(fpsrc, fptgt, ec);
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
 
 /*
- *   copy_symlink : path -> path -> unit
+ *   copy_symlink : path -> path -> bool
  */
 extern "C" {
 value mlcpp_copy_symlink(value vfpsrc, value vfptgt)
@@ -99,13 +86,11 @@ value mlcpp_copy_symlink(value vfpsrc, value vfptgt)
     CAMLparam2(vfpsrc, vfptgt);
     const char *fpsrc = String_val(vfpsrc);
     const char *fptgt = String_val(vfptgt);
-    try {
-        std::filesystem::copy_symlink(fpsrc, fptgt);
-        CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    std::filesystem::copy_symlink(fpsrc, fptgt, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -118,14 +103,10 @@ value mlcpp_create_directory(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        bool res = false;
-        res = std::filesystem::create_directory(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::create_directory(fp, ec);
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -138,20 +119,16 @@ value mlcpp_create_directories(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        bool res = false;
-        res = std::filesystem::create_directories(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::create_directories(fp, ec);
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
 
 /*
- *   create_hard_link : path -> path -> unit
+ *   create_hard_link : path -> path -> bool
  */
 extern "C" {
 value mlcpp_create_hard_link(value vfptgt, value vfplink)
@@ -159,19 +136,17 @@ value mlcpp_create_hard_link(value vfptgt, value vfplink)
     CAMLparam2(vfptgt, vfplink);
     const char *fptgt = String_val(vfptgt);
     const char *fplink = String_val(vfplink);
-    try {
-        std::filesystem::create_hard_link(fptgt, fplink);
-        CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    std::filesystem::create_hard_link(fptgt, fplink, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
 
 /*
- *   create_symlink : path -> path -> unit
+ *   create_symlink : path -> path -> bool
  */
 extern "C" {
 value mlcpp_create_symlink(value vfptgt, value vfplink)
@@ -179,19 +154,17 @@ value mlcpp_create_symlink(value vfptgt, value vfplink)
     CAMLparam2(vfptgt, vfplink);
     const char *fptgt = String_val(vfptgt);
     const char *fplink = String_val(vfplink);
-    try {
-        std::filesystem::create_symlink(fptgt, fplink);
-        CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    std::filesystem::create_symlink(fptgt, fplink, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
 
 /*
- *   create_symlink : path -> path -> unit
+ *   create_directory_symlink : path -> path -> bool
  */
 extern "C" {
 value mlcpp_create_directory_symlink(value vfptgt, value vfplink)
@@ -199,13 +172,11 @@ value mlcpp_create_directory_symlink(value vfptgt, value vfplink)
     CAMLparam2(vfptgt, vfplink);
     const char *fptgt = String_val(vfptgt);
     const char *fplink = String_val(vfplink);
-    try {
-        std::filesystem::create_directory_symlink(fptgt, fplink);
-        CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    std::filesystem::create_directory_symlink(fptgt, fplink, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -219,14 +190,10 @@ value mlcpp_equivalent(value vfp1, value vfp2)
     CAMLparam2(vfp1, vfp2);
     const char *fp1 = String_val(vfp1);
     const char *fp2 = String_val(vfp2);
-    try {
-        bool res = false;
-        res = std::filesystem::equivalent(fp1, fp2);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::equivalent(fp1, fp2, ec);
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -239,13 +206,11 @@ value mlcpp_hard_link_count(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::hard_link_count(fp);
-        CAMLreturn(Val_int(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    int res = 0;
+    std::error_code ec;
+    res = std::filesystem::hard_link_count(fp, ec);
+    if (ec) { res = -1; }
+    CAMLreturn(Val_int(res));
 }
 
 } // extern C
@@ -258,13 +223,10 @@ value mlcpp_read_symlink(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::read_symlink(fp);
-        CAMLreturn(caml_copy_string(res.c_str()));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    std::filesystem::path res("");
+    std::error_code ec;
+    res = std::filesystem::read_symlink(fp, ec);
+    CAMLreturn(caml_copy_string(res.c_str()));
 }
 
 } // extern C
@@ -277,13 +239,11 @@ value mlcpp_remove(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::remove(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::remove(fp, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -296,19 +256,16 @@ value mlcpp_remove_all(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::remove_all(fp);
-        CAMLreturn(Val_int(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    int res = 0;
+    std::error_code ec;
+    res = std::filesystem::remove_all(fp, ec);
+    CAMLreturn(Val_int(res));
 }
 
 } // extern C
 
 /*
- *   rename : path -> path -> unit
+ *   rename : path -> path -> bool
  */
 extern "C" {
 value mlcpp_rename(value vfpsrc, value vfptgt)
@@ -316,19 +273,17 @@ value mlcpp_rename(value vfpsrc, value vfptgt)
     CAMLparam2(vfpsrc, vfptgt);
     const char *fpsrc = String_val(vfpsrc);
     const char *fptgt = String_val(vfptgt);
-    try {
-        std::filesystem::rename(fpsrc, fptgt);
-        CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    std::filesystem::rename(fpsrc, fptgt, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
 
 /*
- *   resize_file : path -> int -> unit
+ *   resize_file : path -> int -> bool
  */
 extern "C" {
 value mlcpp_resize_file(value vfp, value vsz)
@@ -336,13 +291,11 @@ value mlcpp_resize_file(value vfp, value vsz)
     CAMLparam2(vfp, vsz);
     const char *fp = String_val(vfp);
     uint64_t sz = Int64_val(vsz);
-    try {
-        std::filesystem::resize_file(fp, sz);
-        CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    std::filesystem::resize_file(fp, sz, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -356,22 +309,19 @@ value mlcpp_space(value vfp)
     CAMLparam1(vfp);
     CAMLlocal3 (result, l1, l2);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::space(fp);
-        l2 = caml_alloc_small(2, 0);
-        Field(l2, 0) = Val_int(res.available);
-        Field(l2, 1) = Val_int(0);
-        l1 = caml_alloc_small(2, 0);
-        Field(l1, 0) = Val_int(res.free);
-        Field(l1, 1) = l2;
-        result = caml_alloc_small(2, 0);
-        Field(result, 0) = Val_int(res.capacity);
-        Field(result, 1) = l1;
-        CAMLreturn(result);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    std::filesystem::space_info res {0,0,0};
+    std::error_code ec;
+    res = std::filesystem::space(fp, ec);
+    l2 = caml_alloc_small(2, 0);
+    Field(l2, 0) = Val_int(res.available);
+    Field(l2, 1) = Val_int(0);
+    l1 = caml_alloc_small(2, 0);
+    Field(l1, 0) = Val_int(res.free);
+    Field(l1, 1) = l2;
+    result = caml_alloc_small(2, 0);
+    Field(result, 0) = Val_int(res.capacity);
+    Field(result, 1) = l1;
+    CAMLreturn(result);
 }
 
 } // extern C
@@ -386,12 +336,13 @@ value mlcpp_permissions_get(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::status(fp).permissions();
+    std::error_code ec;
+    const auto p = std::filesystem::status(fp, ec);
+    if (!ec) {
+        const auto res = p.permissions();
         CAMLreturn(Val_perms(res & std::filesystem::perms::mask));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
+    } else {
+        CAMLreturn(Val_int(-1));
     }
 }
 
@@ -407,14 +358,12 @@ value mlcpp_permissions_set(value vfp, value vp)
     CAMLparam2(vfp, vp);
     const char *fp = String_val(vfp);
     unsigned up = Int_val(vp);
-    try {
-        std::filesystem::perms p = (*(std::filesystem::perms*)(&up)) & std::filesystem::perms::mask;
-        std::filesystem::permissions(fp, p, std::filesystem::perm_options::replace);
-        CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    std::filesystem::perms p = (*(std::filesystem::perms*)(&up)) & std::filesystem::perms::mask;
+    std::filesystem::permissions(fp, p, std::filesystem::perm_options::replace, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -429,14 +378,12 @@ value mlcpp_permissions_add(value vfp, value vp)
     CAMLparam2(vfp, vp);
     const char *fp = String_val(vfp);
     unsigned up = Int_val(vp);
-    try {
+    bool res = false;
+    std::error_code ec;
     std::filesystem::perms p = (*(std::filesystem::perms*)(&up)) & std::filesystem::perms::mask;
-    std::filesystem::permissions(fp, p, std::filesystem::perm_options::add);
-    CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    std::filesystem::permissions(fp, p, std::filesystem::perm_options::add, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -451,14 +398,12 @@ value mlcpp_permissions_remove(value vfp, value vp)
     CAMLparam2(vfp, vp);
     const char *fp = String_val(vfp);
     unsigned up = Int_val(vp);
-    try {
-        std::filesystem::perms p = (*(std::filesystem::perms*)(&up)) & std::filesystem::perms::mask;
-        std::filesystem::permissions(fp, p, std::filesystem::perm_options::remove);
-        CAMLreturn(Val_unit);
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    std::filesystem::perms p = (*(std::filesystem::perms*)(&up)) & std::filesystem::perms::mask;
+    std::filesystem::permissions(fp, p, std::filesystem::perm_options::remove, ec);
+    if (!ec) { res = true; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -472,13 +417,11 @@ value mlcpp_path_exists(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const bool res = std::filesystem::exists(std::filesystem::path(fp));
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::exists(std::filesystem::path(fp), ec);
+    if (ec) { res = false; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -491,13 +434,10 @@ value mlcpp_path_file_size(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        auto res = std::filesystem::file_size(fp);
-        CAMLreturn(Val_int(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    std::error_code ec;
+    auto res = std::filesystem::file_size(fp, ec);
+    if (ec) { res = 0; }
+    CAMLreturn(Val_int(res));
 }
 
 } // extern C
@@ -510,13 +450,11 @@ value mlcpp_path_is_regular_file(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const bool res = std::filesystem::is_regular_file(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::is_regular_file(fp, ec);
+    if (ec) { res = false; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -529,13 +467,11 @@ value mlcpp_path_is_directory(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const bool res = std::filesystem::is_directory(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::is_directory(fp, ec);
+    if (ec) { res = false; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -548,13 +484,11 @@ value mlcpp_path_is_fifo(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const bool res = std::filesystem::is_fifo(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::is_fifo(fp, ec);
+    if (ec) { res = false; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -567,13 +501,11 @@ value mlcpp_path_is_block_file(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const bool res = std::filesystem::is_block_file(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::is_block_file(fp, ec);
+    if (ec) { res = false; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -586,13 +518,11 @@ value mlcpp_path_is_character_file(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const bool res = std::filesystem::is_character_file(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::is_character_file(fp, ec);
+    if (ec) { res = false; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -605,13 +535,11 @@ value mlcpp_path_is_socket(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const bool res = std::filesystem::is_socket(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::is_socket(fp, ec);
+    if (ec) { res = false; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -624,13 +552,11 @@ value mlcpp_path_is_symlink(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const bool res = std::filesystem::is_symlink(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::is_symlink(fp, ec);
+    if (ec) { res = false; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -643,13 +569,11 @@ value mlcpp_path_is_other(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const bool res = std::filesystem::is_other(fp);
-        CAMLreturn(Val_bool(res));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    bool res = false;
+    std::error_code ec;
+    res = std::filesystem::is_other(fp, ec);
+    if (ec) { res = false; }
+    CAMLreturn(Val_bool(res));
 }
 
 } // extern C
@@ -663,23 +587,19 @@ value mlcpp_path_type(value vfp)
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
     char *res = "unknown";
-    try {
-        while (true) {
-            if (std::filesystem::is_regular_file(fp)) { res = "file"; break; }
-            if (std::filesystem::is_directory(fp)) { res = "directory"; break; }
-            if (std::filesystem::is_fifo(fp)) { res = "fifo"; break; }
-            if (std::filesystem::is_symlink(fp)) { res = "symlink"; break; }
-            if (std::filesystem::is_socket(fp)) { res = "socket"; break; }
-            if (std::filesystem::is_character_file(fp)) { res = "character_file"; break; }
-            if (std::filesystem::is_block_file(fp)) { res = "block_file"; break; }
-            if (std::filesystem::is_other(fp)) { res = "other"; break; }
-            break;
-        }
-        CAMLreturn(caml_copy_string(res));
+    std::error_code ec;
+    while (true) {
+        if (std::filesystem::is_regular_file(fp,ec)) { res = "file"; break; }
+        if (std::filesystem::is_directory(fp,ec)) { res = "directory"; break; }
+        if (std::filesystem::is_fifo(fp,ec)) { res = "fifo"; break; }
+        if (std::filesystem::is_symlink(fp,ec)) { res = "symlink"; break; }
+        if (std::filesystem::is_socket(fp,ec)) { res = "socket"; break; }
+        if (std::filesystem::is_character_file(fp,ec)) { res = "character_file"; break; }
+        if (std::filesystem::is_block_file(fp,ec)) { res = "block_file"; break; }
+        if (std::filesystem::is_other(fp,ec)) { res = "other"; break; }
+        break;
     }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    CAMLreturn(caml_copy_string(res));
 }
 
 } // extern C
@@ -692,13 +612,11 @@ value mlcpp_path_absolute(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::absolute(fp);
-        CAMLreturn(caml_copy_string(res.c_str()));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    std::filesystem::path res("");
+    std::error_code ec;
+    res = std::filesystem::absolute(fp, ec);
+    if (ec) { res = ""; }
+    CAMLreturn(caml_copy_string(res.c_str()));
 }
 
 } // extern C
@@ -711,13 +629,11 @@ value mlcpp_path_relative(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::relative(fp);
-        CAMLreturn(caml_copy_string(res.c_str()));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    std::filesystem::path res("");
+    std::error_code ec;
+    res = std::filesystem::relative(fp, ec);
+    if (ec) { res = ""; }
+    CAMLreturn(caml_copy_string(res.c_str()));
 }
 
 } // extern C
@@ -730,13 +646,11 @@ value mlcpp_path_proximate(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::proximate(fp);
-        CAMLreturn(caml_copy_string(res.c_str()));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    std::filesystem::path res("");
+    std::error_code ec;
+    res = std::filesystem::proximate(fp, ec);
+    if (ec) { res = ""; }
+    CAMLreturn(caml_copy_string(res.c_str()));
 }
 
 } // extern C
@@ -749,13 +663,11 @@ value mlcpp_path_canonical(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::canonical(fp);
-        CAMLreturn(caml_copy_string(res.c_str()));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    std::filesystem::path res("");
+    std::error_code ec;
+    res = std::filesystem::canonical(fp, ec);
+    if (ec) { res = ""; }
+    CAMLreturn(caml_copy_string(res.c_str()));
 }
 
 } // extern C
@@ -768,13 +680,11 @@ value mlcpp_path_weakly_canonical(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    try {
-        const auto res = std::filesystem::weakly_canonical(fp);
-        CAMLreturn(caml_copy_string(res.c_str()));
-    }
-    catch (std::filesystem::filesystem_error& e) {
-        caml_failwith(e.what());
-    }
+    std::filesystem::path res("");
+    std::error_code ec;
+    res = std::filesystem::weakly_canonical(fp, ec);
+    if (ec) { res = ""; }
+    CAMLreturn(caml_copy_string(res.c_str()));
 }
 
 } // extern C

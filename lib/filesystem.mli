@@ -10,11 +10,11 @@ sig
     
     val file_size : path -> int
 
-    val absolute : path -> path
-    val relative : path -> path
-    val proximate : path -> path
-    val canonical : path -> path
-    val weakly_canonical : path -> path
+    val absolute : path -> path option
+    val relative : path -> path option
+    val proximate : path -> path option
+    val canonical : path -> path option
+    val weakly_canonical : path -> path option
 
     val path_type : path -> string
     val is_regular_file : path -> bool
@@ -30,10 +30,10 @@ end
 module Permissions :
 sig
     type permissions
-    val get : path -> permissions
-    val set : path -> permissions -> unit
-    val add : path -> permissions -> unit
-    val remove : path -> permissions -> unit
+    val get : path -> permissions option
+    val set : path -> permissions -> bool
+    val add : path -> permissions -> bool
+    val remove : path -> permissions -> bool
     val to_string : permissions -> string
     val to_dec : permissions -> int
     val to_oct : permissions -> int
@@ -41,30 +41,30 @@ sig
 end
 
 val get_cwd : unit -> path
-val set_cwd : path -> unit
+val set_cwd : path -> bool
 
-val copy : path -> path -> unit
+val copy : path -> path -> bool
 val copy_file : path -> path -> bool
-val copy_symlink : path -> path -> unit
+val copy_symlink : path -> path -> bool
 
 val create_directory : path -> bool
 val create_directories : path -> bool
 
-val create_hard_link : path -> path -> unit
-val create_symlink : path -> path -> unit
-val create_directory_symlink : path -> path -> unit
+val create_hard_link : path -> path -> bool
+val create_symlink : path -> path -> bool
+val create_directory_symlink : path -> path -> bool
 
 val equivalent : path -> path -> bool
 
 val hard_link_count : path -> int
 
-val read_symlink : path -> path
+val read_symlink : path -> path option
 
 val remove : path -> bool
 val remove_all : path -> int
 
-val rename : path -> path -> unit
+val rename : path -> path -> bool
 
-val resize_file : path -> int -> unit
+val resize_file : path -> int -> bool
 
 val space : path -> int list

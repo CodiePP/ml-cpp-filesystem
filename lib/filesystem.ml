@@ -6,11 +6,36 @@ module Path = struct
     let from_string s = s
     external exists : path -> bool = "mlcpp_path_exists"
     external file_size : path -> int = "mlcpp_path_file_size"
-    external absolute : path -> path = "mlcpp_path_absolute"
-    external relative : path -> path = "mlcpp_path_relative"
-    external proximate : path -> path = "mlcpp_path_proximate"
-    external canonical : path -> path = "mlcpp_path_canonical"
-    external weakly_canonical : path -> path = "mlcpp_path_weakly_canonical"
+    external cpp_absolute : path -> path = "mlcpp_path_absolute"
+    let absolute p =
+        let p' = cpp_absolute p in
+        match p' with
+        | "" -> None
+        | _ -> Some p'
+    external cpp_relative : path -> path = "mlcpp_path_relative"
+    let relative p =
+        let p' = cpp_relative p in
+        match p' with
+        | "" -> None
+        | _ -> Some p'
+    external cpp_proximate : path -> path = "mlcpp_path_proximate"
+    let proximate p =
+        let p' = cpp_proximate p in
+        match p' with
+        | "" -> None
+        | _ -> Some p'
+    external cpp_canonical : path -> path = "mlcpp_path_canonical"
+    let canonical p =
+        let p' = cpp_canonical p in
+        match p' with
+        | "" -> None
+        | _ -> Some p'
+    external cpp_weakly_canonical : path -> path = "mlcpp_path_weakly_canonical"
+    let weakly_canonical p =
+        let p' = cpp_weakly_canonical p in
+        match p' with
+        | "" -> None
+        | _ -> Some p'
     external path_type : path -> string = "mlcpp_path_type"
     external is_regular_file : path -> bool = "mlcpp_path_is_regular_file"
     external is_directory : path -> bool = "mlcpp_path_is_directory"
@@ -25,10 +50,16 @@ end (* Path *)
 module Permissions = struct
     type permissions = int
 
-    external get : path -> permissions = "mlcpp_permissions_get"
-    external set : path -> permissions -> unit = "mlcpp_permissions_set"
-    external add : path -> permissions -> unit = "mlcpp_permissions_add"
-    external remove : path -> permissions -> unit = "mlcpp_permissions_remove"
+    external cpp_get : path -> permissions = "mlcpp_permissions_get"
+    let get p =
+        let perms = cpp_get p in
+        match perms with
+        | -1 -> None
+        | _ -> Some perms
+
+    external set : path -> permissions -> bool = "mlcpp_permissions_set"
+    external add : path -> permissions -> bool = "mlcpp_permissions_add"
+    external remove : path -> permissions -> bool = "mlcpp_permissions_remove"
     let to_dec p = p
     let threebits p n = 
         let v = match n with
@@ -61,30 +92,36 @@ module Permissions = struct
 end (* Permissions *)
 
 external get_cwd : unit -> path = "mlcpp_get_cwd"
-external set_cwd : path -> unit = "mlcpp_set_cwd"
+external set_cwd : path -> bool = "mlcpp_set_cwd"
 
-external copy : path -> path -> unit = "mlcpp_copy"
+external copy : path -> path -> bool = "mlcpp_copy"
 external copy_file : path -> path -> bool = "mlcpp_copy_file"
-external copy_symlink : path -> path -> unit = "mlcpp_copy_symlink"
+external copy_symlink : path -> path -> bool = "mlcpp_copy_symlink"
 
 external create_directory : path -> bool = "mlcpp_create_directory"
 external create_directories : path -> bool = "mlcpp_create_directories"
 
-external create_hard_link : path -> path -> unit = "mlcpp_create_hard_link"
-external create_symlink : path -> path -> unit = "mlcpp_create_symlink"
-external create_directory_symlink : path -> path -> unit = "mlcpp_create_directory_symlink"
+external create_hard_link : path -> path -> bool = "mlcpp_create_hard_link"
+external create_symlink : path -> path -> bool = "mlcpp_create_symlink"
+external create_directory_symlink : path -> path -> bool = "mlcpp_create_directory_symlink"
 
 external equivalent : path -> path -> bool = "mlcpp_equivalent"
 
 external hard_link_count : path -> int = "mlcpp_hard_link_count"
 
-external read_symlink : path -> path = "mlcpp_read_symlink"
+external cpp_read_symlink : path -> path = "mlcpp_read_symlink"
+
+let read_symlink p =
+    let p' = cpp_read_symlink p in
+    match p' with
+    | "" -> None
+    | _ -> Some p'
 
 external remove : path -> bool = "mlcpp_remove"
 external remove_all : path -> int = "mlcpp_remove_all"
 
-external rename : path -> path -> unit = "mlcpp_rename"
+external rename : path -> path -> bool = "mlcpp_rename"
 
-external resize_file : path -> int -> unit = "mlcpp_resize_file"
+external resize_file : path -> int -> bool = "mlcpp_resize_file"
 
 external space : path -> int list = "mlcpp_space"

@@ -7,24 +7,29 @@ let () = print_endline "Hello, World!";
          let fp = Filesystem.Path.from_string "dune-project" in
          if Filesystem.Path.exists fp
          then let p2 = Filesystem.Permissions.from_oct 755 in (* rwxr_xr_x *)
-              Filesystem.Permissions.set fp p2
+              Filesystem.Permissions.set fp p2 |> ignore
          else print_endline "not found.";
          if Filesystem.Path.exists fp
          then let p2 = Filesystem.Permissions.from_oct 020 in (* g + w *)
-              Filesystem.Permissions.add fp p2
+              Filesystem.Permissions.add fp p2 |> ignore
          else print_endline "not found.";
          if Filesystem.Path.exists fp
          then let p2 = Filesystem.Permissions.from_oct 111 in  (* no x *)
-              Filesystem.Permissions.remove fp p2
+              Filesystem.Permissions.remove fp p2 |> ignore
          else print_endline "not found.";
          if Filesystem.Path.exists fp
-         then Printf.printf "%s (a %s)  fsize: %d   perms: o%d (%d) (%s)\n"
+         then
+           let perms = Filesystem.Permissions.get fp in
+           match perms with
+           | None -> print_endline "failure getting permissions"
+           | Some p' ->
+                Printf.printf "%s (a %s)  fsize: %d   perms: o%d (%d) (%s)\n"
                 (Filesystem.Path.to_string fp)
                 (Filesystem.Path.path_type fp)
                 (Filesystem.Path.file_size fp)
-                (Filesystem.Permissions.to_oct @@ Filesystem.Permissions.get fp)
-                (Filesystem.Permissions.to_dec @@ Filesystem.Permissions.get fp)
-                (Filesystem.Permissions.to_string @@ Filesystem.Permissions.get fp)
+                (Filesystem.Permissions.to_oct p')
+                (Filesystem.Permissions.to_dec p')
+                (Filesystem.Permissions.to_string p')
          else print_endline "not found.";
 
          let p2 = Filesystem.Permissions.from_oct 755 in

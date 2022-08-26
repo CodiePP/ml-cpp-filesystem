@@ -1,2 +1,4 @@
 (test
- (name mlCppFilesystem))
+ (name test)
+ (modules test testFilesystem testPath testPermissions)
+ (libraries alcotest mlcpp_filesystem unix))
