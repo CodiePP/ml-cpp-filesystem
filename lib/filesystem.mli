@@ -6,10 +6,17 @@ sig
     val to_string : path -> string
     val from_string : string -> path
 
+    val temp_directory : unit -> path
+
     val exists : path -> bool
     
     val file_size : path -> int
 
+    val filename : path -> path
+    val extension : path -> path
+    val parent : path -> path
+    val root : path -> path
+    
     val absolute : path -> path option
     val relative : path -> path option
     val proximate : path -> path option

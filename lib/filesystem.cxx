@@ -22,7 +22,6 @@ value mlcpp_get_cwd(value unit)
     const auto res = std::filesystem::current_path();
     CAMLreturn(caml_copy_string(res.c_str()));
 }
-
 } // extern C
 
 /*
@@ -39,7 +38,6 @@ value mlcpp_set_cwd(value vfp)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -57,7 +55,6 @@ value mlcpp_copy(value vfpsrc, value vfptgt)
     if (! ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -74,7 +71,6 @@ value mlcpp_copy_file(value vfpsrc, value vfptgt)
     res = std::filesystem::copy_file(fpsrc, fptgt, ec);
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -92,7 +88,6 @@ value mlcpp_copy_symlink(value vfpsrc, value vfptgt)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -108,7 +103,6 @@ value mlcpp_create_directory(value vfp)
     res = std::filesystem::create_directory(fp, ec);
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -124,7 +118,6 @@ value mlcpp_create_directories(value vfp)
     res = std::filesystem::create_directories(fp, ec);
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -142,7 +135,6 @@ value mlcpp_create_hard_link(value vfptgt, value vfplink)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -160,7 +152,6 @@ value mlcpp_create_symlink(value vfptgt, value vfplink)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -178,7 +169,6 @@ value mlcpp_create_directory_symlink(value vfptgt, value vfplink)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -195,7 +185,6 @@ value mlcpp_equivalent(value vfp1, value vfp2)
     res = std::filesystem::equivalent(fp1, fp2, ec);
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -212,7 +201,6 @@ value mlcpp_hard_link_count(value vfp)
     if (ec) { res = -1; }
     CAMLreturn(Val_int(res));
 }
-
 } // extern C
 
 /*
@@ -228,7 +216,6 @@ value mlcpp_read_symlink(value vfp)
     res = std::filesystem::read_symlink(fp, ec);
     CAMLreturn(caml_copy_string(res.c_str()));
 }
-
 } // extern C
 
 /*
@@ -245,7 +232,6 @@ value mlcpp_remove(value vfp)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -261,7 +247,6 @@ value mlcpp_remove_all(value vfp)
     res = std::filesystem::remove_all(fp, ec);
     CAMLreturn(Val_int(res));
 }
-
 } // extern C
 
 /*
@@ -279,7 +264,6 @@ value mlcpp_rename(value vfpsrc, value vfptgt)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -297,7 +281,6 @@ value mlcpp_resize_file(value vfp, value vsz)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -323,7 +306,6 @@ value mlcpp_space(value vfp)
     Field(result, 1) = l1;
     CAMLreturn(result);
 }
-
 } // extern C
 
 
@@ -345,7 +327,6 @@ value mlcpp_permissions_get(value vfp)
         CAMLreturn(Val_int(-1));
     }
 }
-
 } // extern C
 
 
@@ -365,7 +346,6 @@ value mlcpp_permissions_set(value vfp, value vp)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 
@@ -385,7 +365,6 @@ value mlcpp_permissions_add(value vfp, value vp)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 
@@ -405,7 +384,6 @@ value mlcpp_permissions_remove(value vfp, value vp)
     if (!ec) { res = true; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 
@@ -423,7 +401,6 @@ value mlcpp_path_exists(value vfp)
     if (ec) { res = false; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -439,7 +416,6 @@ value mlcpp_path_file_size(value vfp)
     if (ec) { res = 0; }
     CAMLreturn(Val_int(res));
 }
-
 } // extern C
 
 /*
@@ -456,7 +432,6 @@ value mlcpp_path_is_regular_file(value vfp)
     if (ec) { res = false; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -473,7 +448,6 @@ value mlcpp_path_is_directory(value vfp)
     if (ec) { res = false; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -490,7 +464,6 @@ value mlcpp_path_is_fifo(value vfp)
     if (ec) { res = false; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -507,7 +480,6 @@ value mlcpp_path_is_block_file(value vfp)
     if (ec) { res = false; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -524,7 +496,6 @@ value mlcpp_path_is_character_file(value vfp)
     if (ec) { res = false; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -541,7 +512,6 @@ value mlcpp_path_is_socket(value vfp)
     if (ec) { res = false; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -558,7 +528,6 @@ value mlcpp_path_is_symlink(value vfp)
     if (ec) { res = false; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -575,7 +544,6 @@ value mlcpp_path_is_other(value vfp)
     if (ec) { res = false; }
     CAMLreturn(Val_bool(res));
 }
-
 } // extern C
 
 /*
@@ -601,7 +569,6 @@ value mlcpp_path_type(value vfp)
     }
     CAMLreturn(caml_copy_string(res));
 }
-
 } // extern C
 
 /*
@@ -618,7 +585,6 @@ value mlcpp_path_absolute(value vfp)
     if (ec) { res = ""; }
     CAMLreturn(caml_copy_string(res.c_str()));
 }
-
 } // extern C
 
 /*
@@ -635,7 +601,6 @@ value mlcpp_path_relative(value vfp)
     if (ec) { res = ""; }
     CAMLreturn(caml_copy_string(res.c_str()));
 }
-
 } // extern C
 
 /*
@@ -652,7 +617,6 @@ value mlcpp_path_proximate(value vfp)
     if (ec) { res = ""; }
     CAMLreturn(caml_copy_string(res.c_str()));
 }
-
 } // extern C
 
 /*
@@ -669,7 +633,6 @@ value mlcpp_path_canonical(value vfp)
     if (ec) { res = ""; }
     CAMLreturn(caml_copy_string(res.c_str()));
 }
-
 } // extern C
 
 /*
@@ -686,5 +649,53 @@ value mlcpp_path_weakly_canonical(value vfp)
     if (ec) { res = ""; }
     CAMLreturn(caml_copy_string(res.c_str()));
 }
+} // extern C
 
+extern "C" {
+value mlcpp_temp_directory(value unit)
+{
+    CAMLparam1(unit);
+    const auto res = std::filesystem::temp_directory_path();
+    CAMLreturn(caml_copy_string(res.c_str()));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_path_filename(value vfp)
+{
+    CAMLparam1(vfp);
+    std::filesystem::path fp = String_val(vfp);
+    auto res = fp.filename();
+    CAMLreturn(caml_copy_string(res.c_str()));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_path_extension(value vfp)
+{
+    CAMLparam1(vfp);
+    std::filesystem::path fp = String_val(vfp);
+    auto res = fp.extension();
+    CAMLreturn(caml_copy_string(res.c_str()));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_path_parent(value vfp)
+{
+    CAMLparam1(vfp);
+    std::filesystem::path fp = String_val(vfp);
+    auto res = fp.parent_path();
+    CAMLreturn(caml_copy_string(res.c_str()));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_path_root(value vfp)
+{
+    CAMLparam1(vfp);
+    std::filesystem::path fp = String_val(vfp);
+    auto res = fp.root_path();
+    CAMLreturn(caml_copy_string(res.c_str()));
+}
 } // extern C

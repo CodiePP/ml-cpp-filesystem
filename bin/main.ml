@@ -40,4 +40,15 @@ let () = print_endline "Hello, World!";
 
          let space = Filesystem.space @@ Filesystem.get_cwd () in
          Printf.printf "space: len = %d   capacity: %d  free: %d  available: %d\n"
-           (List.length space) (List.hd space) (List.hd (List.tl space)) (List.hd (List.tl @@ List.tl space))
+           (List.length space) (List.hd space) (List.hd (List.tl space)) (List.hd (List.tl @@ List.tl space));
+
+         let tmpdir = Filesystem.Path.temp_directory () in
+         Printf.printf "temporary directory: %s\n" (Filesystem.Path.to_string tmpdir);
+
+         let testfile = Filesystem.Path.from_string "/tmp/test101/some_file.dat" in
+         Printf.printf "file %s: has ext = %s; filename = %s; in dir = %s; root = %s\n"
+           (Filesystem.Path.to_string testfile)
+           (Filesystem.Path.to_string @@ Filesystem.Path.extension testfile)
+           (Filesystem.Path.to_string @@ Filesystem.Path.filename testfile)
+           (Filesystem.Path.to_string @@ Filesystem.Path.parent testfile)
+           (Filesystem.Path.to_string @@ Filesystem.Path.root testfile)

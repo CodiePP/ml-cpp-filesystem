@@ -4,6 +4,13 @@ type path = string
 module Path = struct
     let to_string p = p
     let from_string s = s
+
+    external temp_directory : unit -> path = "mlcpp_temp_directory"
+    external filename : path -> path = "mlcpp_path_filename"
+    external extension : path -> path = "mlcpp_path_extension"
+    external parent : path -> path = "mlcpp_path_parent"
+    external root : path -> path = "mlcpp_path_root"
+
     external exists : path -> bool = "mlcpp_path_exists"
     external file_size : path -> int = "mlcpp_path_file_size"
     external cpp_absolute : path -> path = "mlcpp_path_absolute"
