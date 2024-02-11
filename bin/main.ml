@@ -51,4 +51,13 @@ let () = print_endline "Hello, World!";
            (Filesystem.Path.to_string @@ Filesystem.Path.extension testfile)
            (Filesystem.Path.to_string @@ Filesystem.Path.filename testfile)
            (Filesystem.Path.to_string @@ Filesystem.Path.parent testfile)
-           (Filesystem.Path.to_string @@ Filesystem.Path.root testfile)
+           (Filesystem.Path.to_string @@ Filesystem.Path.root testfile);
+
+         let dir = Filesystem.Path.from_string "." in
+         Filesystem.list_directory dir (fun de ->
+           let fp = Filesystem.Direntry.as_path de in
+           let (fid, fsz) = if Filesystem.Direntry.is_regular_file de then ("f", Filesystem.Direntry.file_size de)
+           else if Filesystem.Direntry.is_directory de then ("D",0)
+           else ("*",0) in
+           Printf.printf "%s %d %s\n" fid fsz (Filesystem.Path.to_string fp) 
+         )

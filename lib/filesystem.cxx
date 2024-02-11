@@ -5,11 +5,12 @@ extern "C" {
 #include <caml/memory.h>
 #include <caml/alloc.h>
 // #include <caml/custom.h>
-// #include <caml/callback.h>
+#include <caml/callback.h>
 #include <caml/fail.h>
 } //extern C
 
 // C++ includes
+#include <algorithm>
 #include <filesystem>
 
 /*
@@ -554,7 +555,7 @@ value mlcpp_path_type(value vfp)
 {
     CAMLparam1(vfp);
     const char *fp = String_val(vfp);
-    char *res = "unknown";
+    std::string res{"unknown"};
     std::error_code ec;
     while (true) {
         if (std::filesystem::is_regular_file(fp,ec)) { res = "file"; break; }
@@ -567,7 +568,7 @@ value mlcpp_path_type(value vfp)
         if (std::filesystem::is_other(fp,ec)) { res = "other"; break; }
         break;
     }
-    CAMLreturn(caml_copy_string(res));
+    CAMLreturn(caml_copy_string(res.c_str()));
 }
 } // extern C
 
@@ -697,5 +698,198 @@ value mlcpp_path_root(value vfp)
     std::filesystem::path fp = String_val(vfp);
     auto res = fp.root_path();
     CAMLreturn(caml_copy_string(res.c_str()));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_list_directory(value vfp, value vf)
+{
+    CAMLparam2(vfp, vf);
+    CAMLlocal1(dearg);
+    std::filesystem::path fp = String_val(vfp);
+    for (std::filesystem::directory_entry const& dir_entry : std::filesystem::directory_iterator(fp)) {
+        const std::filesystem::directory_entry *de = &dir_entry;
+        dearg = caml_copy_nativeint((intnat)de);
+        caml_callback(vf, dearg);
+    };
+    CAMLreturn(Val_unit);
+}
+} // extern C
+
+extern "C" {
+value mlcpp_as_path(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    if (de) {
+        CAMLreturn(caml_copy_string(de->path().c_str()));
+    } else {
+        CAMLreturn(caml_copy_string(""));
+    }
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_exists(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    bool res = false;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::exists(ec);
+        if (ec) { res = false; }
+    }
+    CAMLreturn(Val_bool(res));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_is_regular_file(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    bool res = false;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::is_regular_file(ec);
+        if (ec) { res = false; }
+    }
+    CAMLreturn(Val_bool(res));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_is_block_file(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    bool res = false;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::is_block_file(ec);
+        if (ec) { res = false; }
+    }
+    CAMLreturn(Val_bool(res));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_is_character_file(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    bool res = false;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::is_regular_file(ec);
+        if (ec) { res = false; }
+    }
+    CAMLreturn(Val_bool(res));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_is_directory(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    bool res = false;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::is_directory(ec);
+        if (ec) { res = false; }
+    }
+    CAMLreturn(Val_bool(res));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_is_fifo(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    bool res = false;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::is_fifo(ec);
+        if (ec) { res = false; }
+    }
+    CAMLreturn(Val_bool(res));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_is_other(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    bool res = false;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::is_other(ec);
+        if (ec) { res = false; }
+    }
+    CAMLreturn(Val_bool(res));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_is_socket(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    bool res = false;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::is_socket(ec);
+        if (ec) { res = false; }
+    }
+    CAMLreturn(Val_bool(res));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_is_symlink(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    bool res = false;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::is_symlink(ec);
+        if (ec) { res = false; }
+    }
+    CAMLreturn(Val_bool(res));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_file_size(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    long res = 0;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::file_size(ec);
+        if (ec) { res = 0; }
+    }
+    CAMLreturn(Val_int(res));
+}
+} // extern C
+
+extern "C" {
+value mlcpp_direntry_hard_link_count(value vde)
+{
+    CAMLparam1(vde);
+    std::filesystem::directory_entry *de = (std::filesystem::directory_entry *) Nativeint_val(vde);
+    long res = 0;
+    if (de) {
+        std::error_code ec;
+        res = de->std::filesystem::directory_entry::hard_link_count(ec);
+        if (ec) { res = 0; }
+    }
+    CAMLreturn(Val_int(res));
 }
 } // extern C

@@ -75,3 +75,27 @@ val rename : path -> path -> bool
 val resize_file : path -> int -> bool
 
 val space : path -> int list
+
+type direntry
+
+module Direntry :
+sig
+    val as_path : direntry -> path
+
+    val direntry_exists : direntry -> bool
+
+    val is_regular_file : direntry -> bool
+    val is_block_file : direntry -> bool
+    val is_character_file : direntry -> bool
+    val is_directory : direntry -> bool
+    val is_fifo : direntry -> bool
+    val is_other : direntry -> bool
+    val is_socket : direntry -> bool
+    val is_symlink : direntry -> bool
+
+    val file_size : direntry -> int
+    val hard_link_count : path -> int
+    
+end
+
+val list_directory : path -> (direntry -> unit) -> unit

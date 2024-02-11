@@ -132,3 +132,27 @@ external rename : path -> path -> bool = "mlcpp_rename"
 external resize_file : path -> int -> bool = "mlcpp_resize_file"
 
 external space : path -> int list = "mlcpp_space"
+
+type direntry
+
+module Direntry = struct
+
+    external as_path : direntry -> path = "mlcpp_as_path"
+
+    external direntry_exists : direntry -> bool = "mlcpp_direntry_exists"
+
+    external is_regular_file : direntry -> bool = "mlcpp_direntry_is_regular_file"
+    external is_block_file : direntry -> bool = "mlcpp_direntry_is_block_file"
+    external is_character_file : direntry -> bool = "mlcpp_direntry_is_character_file"
+    external is_directory : direntry -> bool = "mlcpp_direntry_is_directory"
+    external is_fifo : direntry -> bool = "mlcpp_direntry_is_fifo"
+    external is_other : direntry -> bool = "mlcpp_direntry_is_other"
+    external is_socket : direntry -> bool = "mlcpp_direntry_is_socket"
+    external is_symlink : direntry -> bool = "mlcpp_direntry_is_symlink"
+
+    external file_size : direntry -> int = "mlcpp_direntry_file_size"
+    external hard_link_count : path -> int = "mlcpp_direntry_hard_link_count"
+    
+end
+
+external list_directory : path -> (direntry -> unit) -> unit = "mlcpp_list_directory"
