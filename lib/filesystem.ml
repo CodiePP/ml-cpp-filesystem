@@ -151,7 +151,7 @@ module Direntry = struct
     external is_symlink : direntry -> bool = "mlcpp_direntry_is_symlink"
 
     external file_size : direntry -> int = "mlcpp_direntry_file_size"
-    external hard_link_count : path -> int = "mlcpp_direntry_hard_link_count"
+    external hard_link_count : direntry -> int = "mlcpp_direntry_hard_link_count"
     
 end
 
