@@ -94,7 +94,7 @@ sig
     val is_symlink : direntry -> bool
 
     val file_size : direntry -> int
-    val hard_link_count : path -> int
+    val hard_link_count : direntry -> int
     
 end
 
