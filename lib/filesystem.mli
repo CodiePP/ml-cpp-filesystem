@@ -12,6 +12,8 @@ sig
     
     val file_size : path -> int
 
+    val append : path -> path -> path
+
     val filename : path -> path
     val extension : path -> path
     val parent : path -> path

@@ -60,4 +60,10 @@ let () = print_endline "Hello, World!";
            else if Filesystem.Direntry.is_directory de then ("D",0)
            else ("*",0) in
            Printf.printf "%s %d %s\n" fid fsz (Filesystem.Path.to_string fp) 
-         )
+         );
+
+         let space = Filesystem.space (Filesystem.Path.from_string "/") in
+         begin
+           Printf.printf "space: "; List.iteri (fun i nsz -> Printf.printf "  %d:%d " i nsz) space;
+           Printf.printf "\n"
+         end

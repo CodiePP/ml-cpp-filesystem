@@ -653,6 +653,18 @@ value mlcpp_path_weakly_canonical(value vfp)
 } // extern C
 
 extern "C" {
+value mlcpp_path_append(value vfp1, value vfp2)
+{
+    CAMLparam2(vfp1,vfp2);
+    std::filesystem::path fp1 = String_val(vfp1);
+    std::filesystem::path fp2 = String_val(vfp2);
+    std::filesystem::path res = fp1 / fp2;
+    CAMLreturn(caml_copy_string(res.c_str()));
+}
+} // extern C
+
+
+extern "C" {
 value mlcpp_temp_directory(value unit)
 {
     CAMLparam1(unit);
