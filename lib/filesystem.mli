@@ -100,4 +100,4 @@ sig
     
 end
 
-val list_directory : path -> (direntry -> unit) -> unit
+val list_directory : path -> 'a -> (direntry -> 'a -> 'a) -> 'a

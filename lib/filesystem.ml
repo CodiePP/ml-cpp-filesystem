@@ -156,4 +156,4 @@ module Direntry = struct
     
 end
 
-external list_directory : path -> (direntry -> unit) -> unit = "mlcpp_list_directory"
+external list_directory : path -> 'a -> (direntry -> 'a -> 'a) -> 'a = "mlcpp_list_directory"

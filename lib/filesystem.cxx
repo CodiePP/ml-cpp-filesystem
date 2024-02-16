@@ -714,17 +714,17 @@ value mlcpp_path_root(value vfp)
 } // extern C
 
 extern "C" {
-value mlcpp_list_directory(value vfp, value vf)
+value mlcpp_list_directory(value vfp, value va, value vf)
 {
-    CAMLparam2(vfp, vf);
+    CAMLparam3(vfp, va, vf);
     CAMLlocal1(dearg);
     std::filesystem::path fp = String_val(vfp);
     for (std::filesystem::directory_entry const& dir_entry : std::filesystem::directory_iterator(fp)) {
         const std::filesystem::directory_entry *de = &dir_entry;
         dearg = caml_copy_nativeint((intnat)de);
-        caml_callback(vf, dearg);
+        va = caml_callback2(vf, dearg, va);
     };
-    CAMLreturn(Val_unit);
+    CAMLreturn(va);
 }
 } // extern C
 

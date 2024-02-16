@@ -54,13 +54,34 @@ let () = print_endline "Hello, World!";
            (Filesystem.Path.to_string @@ Filesystem.Path.root testfile);
 
          let dir = Filesystem.Path.from_string "." in
-         Filesystem.list_directory dir (fun de ->
+         Filesystem.list_directory dir () (fun de () ->
            let fp = Filesystem.Direntry.as_path de in
            let (fid, fsz) = if Filesystem.Direntry.is_regular_file de then ("f", Filesystem.Direntry.file_size de)
            else if Filesystem.Direntry.is_directory de then ("D",0)
            else ("*",0) in
            Printf.printf "%s %d %s\n" fid fsz (Filesystem.Path.to_string fp) 
          );
+
+         let count = Filesystem.list_directory dir 0 (fun de cnt ->
+          let fp = Filesystem.Direntry.as_path de in
+          let (fid, fsz) = if Filesystem.Direntry.is_regular_file de then ("f", Filesystem.Direntry.file_size de)
+          else if Filesystem.Direntry.is_directory de then ("D",0)
+          else ("*",0) in
+          let _ = Printf.printf "%s %d %s\n" fid fsz (Filesystem.Path.to_string fp)
+          in (cnt + 1)
+         )
+         in Printf.printf "counted %d files and directories\n" count;
+
+         let dirs = Filesystem.list_directory dir [] (fun de ds ->
+          let fp = Filesystem.Direntry.as_path de in
+          let (fid, fsz) = if Filesystem.Direntry.is_regular_file de then ("f", Filesystem.Direntry.file_size de)
+          else if Filesystem.Direntry.is_directory de then ("D",0)
+          else ("*",0) in
+          let _ = Printf.printf "%s %d %s\n" fid fsz (Filesystem.Path.to_string fp)
+          in if fsz = 0 then ((Filesystem.Path.to_string fp) :: ds) else ds
+         )
+         in Printf.printf "counted %d directories\n" (List.length dirs);
+         Printf.printf "%s\n" (List.fold_left (fun agg dn -> agg ^ "  " ^ dn) "" dirs);
 
          let space = Filesystem.space (Filesystem.Path.from_string "/") in
          begin
