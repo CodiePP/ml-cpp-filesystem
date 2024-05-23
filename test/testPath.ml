@@ -2,10 +2,11 @@ open Mlcpp_filesystem
 
 module Testing = struct
   let from_string = Filesystem.Path.from_string
-  (* let to_string = Filesystem.Path.to_string *)
+  let to_string = Filesystem.Path.to_string
   let exists = fun sfp -> Filesystem.Path.exists @@ Filesystem.Path.from_string sfp
   let file_size = fun sfp -> Filesystem.Path.file_size @@ Filesystem.Path.from_string sfp
   let absolute = fun sfp -> Filesystem.Path.absolute @@ Filesystem.Path.from_string sfp
+  let append = fun fp1 fp2 -> Filesystem.Path.append (Filesystem.Path.from_string fp1) (Filesystem.Path.from_string fp2)
   let canonical = fun sfp -> Filesystem.Path.canonical @@ Filesystem.Path.from_string sfp
   let relative = fun sfp -> Filesystem.Path.relative @@ Filesystem.Path.from_string sfp
   let proximate = fun sfp -> Filesystem.Path.proximate @@ Filesystem.Path.from_string sfp
@@ -14,6 +15,7 @@ module Testing = struct
   let is_regular_file = fun sfp -> Filesystem.Path.is_regular_file @@ Filesystem.Path.from_string sfp
   let is_directory = fun sfp -> Filesystem.Path.is_directory @@ Filesystem.Path.from_string sfp
   let is_other = fun sfp -> Filesystem.Path.is_other @@ Filesystem.Path.from_string sfp
+  let parent = fun sfp -> Filesystem.Path.parent @@ Filesystem.Path.from_string sfp
 end
 
 
@@ -99,8 +101,22 @@ let test_is_other_fail () =
   "a file is not some 'other'"
   false (* == *) (Testing.is_other "test.exe")
 
+let test_path_append () =
+  Alcotest.(check string)
+  "appending two paths returns a path"
+  "/data/dir/file.dat" (* == *) (Testing.append "/data" "/dir/file.dat" |> Testing.to_string)
 
+let test_path_append2 () =
+  Alcotest.(check string)
+  "appending two paths returns a path"
+  "/data/dir/file.dat" (* == *) (Testing.append "/data" "dir/file.dat" |> Testing.to_string)
 
+let test_path_parent () =
+  Alcotest.(check string)
+  "parent of a path"
+  "/data/dir" (* == *) (Testing.parent "/data/dir/file.dat" |> Testing.to_string)
+
+  
 (* Runner *)
 
 let test =
@@ -123,4 +139,7 @@ let test =
     test_case "a dir" `Quick test_is_directory;
     test_case "not a dir" `Quick test_is_directory_fail;
     test_case "not some other" `Quick test_is_other_fail;
+    test_case "appending absolut paths" `Quick test_path_append;
+    test_case "appending relative path" `Quick test_path_append;
+    test_case "parent of path" `Quick test_path_parent;
   ]

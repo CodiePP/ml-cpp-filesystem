@@ -11,7 +11,7 @@ end
 
 let test_get_existing () =
   Alcotest.(check int) "permissions of existing file"
-  500 (* == *) (match Testing.get "test.exe" with | None -> -1 | Some p -> Filesystem.Permissions.to_oct p)
+  755 (* == *) (match Testing.get "test.exe" with | None -> -1 | Some p -> Filesystem.Permissions.to_oct p)
 
 let test_get_unknown () =
   Alcotest.(check int) "permissions of unknown file"

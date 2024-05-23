@@ -5,7 +5,8 @@ module Path = struct
     let to_string p = p
     let from_string s = s
 
-    external append : path -> path -> path = "mlcpp_path_append"
+    external cpp_append : path -> path -> string = "mlcpp_path_append"
+    let append p1 p2 = cpp_append p1 p2 |> from_string
     external temp_directory : unit -> path = "mlcpp_temp_directory"
     external filename : path -> path = "mlcpp_path_filename"
     external extension : path -> path = "mlcpp_path_extension"

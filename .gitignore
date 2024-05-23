@@ -32,3 +32,5 @@ mlcpp_filesystem.opam
 
 
 .vscode/
+
+.DS_Store
